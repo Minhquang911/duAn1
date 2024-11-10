@@ -1,17 +1,15 @@
 <?php
 session_start();
-
 // Require file Common
 require_once '../commons/env.php'; // Khai báo biến môi trường
 require_once '../commons/function.php'; // Hàm hỗ trợ
 
 // Require toàn bộ file Controllers
 require_once 'controllers/DashboardController.php';
-require_once 'controllers/tinTucControler.php';
-
+require_once 'controllers/bannerController.php';
 
 // Require toàn bộ file Models
-require_once './models/tinTuc.php';
+require_once 'models/banner.php';
 
 // Route
 $act = $_GET['act'] ?? '/';
@@ -20,15 +18,12 @@ $act = $_GET['act'] ?? '/';
 
 match ($act) {
     // Dashboards
-    '/'                    => (new DashboardController())->index(),
-
-    // quan ly danh muc san pham 
-    'tin-tucs'             => (new TinTucController())->home(),
-    'form-them-tin-tuc'    => (new TinTucController())->create(),
-    'them-tin-tuc'         => (new TinTucController())->add(),
-    'form-sua-tin-tuc'     => (new TinTucController())->edit(),
-    'sua-tin-tuc'          => (new TinTucController())->update(),
-    'xoa-tin-tuc'          => (new TinTucController())->delete(),
-
-    
+    '/'                 => (new DashboardController())->index(),
+    // quan ly danh muc banner
+    'banners'             => (new bannerController())->home(),
+    'form-them-banner'    => (new bannerController())->create(),
+    'them-banner'         => (new bannerController())->add(),
+    'form-sua-banner'     => (new bannerController())->edit(),
+    'sua-banner'          => (new bannerController())->update(),
+    'xoa-banner'          => (new bannerController())->delete(),
 };
