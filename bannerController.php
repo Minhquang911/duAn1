@@ -16,7 +16,7 @@ class bannerController
         $banners = $this->modelBanner->getAll();
 
         //dua du lieu ra trang home
-        require_once 'views/banner/index.php';
+        require_once 'views/banner/list_banner.php';
     }
 
 
@@ -24,8 +24,10 @@ class bannerController
     public function create()
     {
         // hien thi form add banner
-        require_once 'views/banner/add.php';
+        require_once 'views/banner/create_banner.php';
     }
+
+
 
 
     // ham xu ly them vao csdl
@@ -83,7 +85,7 @@ class bannerController
 
 
         // hien thi form create ra man hinh
-        require_once 'views/banner/create.php';
+        require_once 'views/banner/edit_banner.php';
     }
 
 
@@ -138,6 +140,21 @@ class bannerController
             // tien hanh xoa banner
             $this->modelBanner->deleteData($id);
             header('location: ?act=banners');
+        }
+    }
+
+
+    // ham search san pham
+    public function search()
+    {
+        if (isset($_POST['timkiem'])) {
+            $search = $_POST['search'];
+
+            // Gọi phương thức searchData để lấy kết quả tìm kiếm
+            $banners = $this->modelBanner->searchData($search);
+
+            // Hiển thị kết quả trên list_banner.php
+            require_once 'views/banner/list_banner.php';
         }
     }
 }

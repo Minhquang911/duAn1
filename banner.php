@@ -90,8 +90,6 @@ class banner
     }
 
 
-
-
     // xoa du lieu khoi csdl va trang home
     public function deleteData($id)
     {
@@ -114,9 +112,24 @@ class banner
 
 
 
+    // thuc hien search
 
+    public function searchData($search)
+    {
+        try {
+            $sql = "SELECT * FROM banner WHERE tieude_banner LIKE :search";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':search', '%' . $search . '%');
+            $stmt->execute();
 
+            $results = $stmt->fetchAll();
 
+            // Trả về kết quả tìm kiếm nếu có, nếu không trả về một mảng rỗng
+            return !empty($results) ? $results : [];
+        } catch (PDOException $e) {
+            echo 'Lỗi: ' . $e->getMessage();
+        }
+    }
 
 
 

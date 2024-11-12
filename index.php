@@ -26,4 +26,5 @@ match ($act) {
     'form-sua-banner'     => (new bannerController())->edit(),
     'sua-banner'          => (new bannerController())->update(),
     'xoa-banner'          => (new bannerController())->delete(),
+    'search-banner'       => (new bannerController())->search(),
 };
