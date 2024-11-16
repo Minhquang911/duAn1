@@ -74,8 +74,8 @@
                                             <input type="search" name="search" placeholder="Tìm Kiếm theo mã đơn hàng ">
                                             <input type="submit" name="timkiem" value="Tìm Kiếm">
                                         </form>
-                                        
-                                        
+
+
 
                                     </div><!-- end card header -->
 
@@ -93,7 +93,7 @@
                                                             <th scope="col">Ngày đặt</th>
                                                             <th scope="col">Tổng tiền</th>
                                                             <th scope="col">Trạng thái</th>
-                                                            
+
                                                             <th scope="col">Thao tác</th>
                                                         </tr>
                                                     </thead>
@@ -106,9 +106,9 @@
                                                                 <td><?= $donHang['sdt_nguoi_nhan'] ?></td>
                                                                 <td><?= $donHang['ngay_dat'] ?></td>
                                                                 <td><?= $donHang['tong_tien'] ?></td>
-                                                                
-                                                                
-                                                                
+
+
+
                                                                 <td>
                                                                     <?php
                                                                     if ($donHang['trang_thai_id'] == 1) { ?>
@@ -122,16 +122,14 @@
                                                                     ?>
 
                                                                 </td>
-                                          
+
                                                                 <td>
                                                                     <div class="hstack gap-3 flex-wrap">
+
+                                                                        <a href="?act=form-chi-tiet-don-hang&don_hang_id=<?= $donHang['id'] ?>" class="btn btn-info btn-sm me-1" ><i class="ri-eye-line"></i>Xem</a>
+                                                                       
                                                                         <a href="?act=form-sua-don-hang&don_hang_id=<?= $donHang['id'] ?>" class="link-success fs-15"><i class="ri-edit-2-line"></i>Sửa</a>
-                                                                        <form action="?act=xoa-don-hang" method="POST"
-                                                                            onsubmit="return confirm('Bạn có đồng ý xóa không?')">
-                                                                            <input type="hidden" name="don_hang_id" value="<?= $donHang['id'] ?>">
-                                                                            <button type="submit" class="link-danger fs-15" style="border: none; background: none;">
-                                                                                <i class="ri-delete-bin-line"></i>
-                                                                            </button>
+
                                                                         </form>
                                                                     </div>
                                                                 </td>
