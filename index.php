@@ -43,7 +43,7 @@ match ($act) {
 
     // Quản lý đơn hàng
     'don-hangs'              => (new AdminDonHangController())->index(),
-    // 'form-sua-don-hang'      => (new AdminDonHangController())->formEditDonHang(),
+    
     'form-sua-don-hang'      => (new AdminDonHangController())->edit(),
     'sua-don-hang'           => (new AdminDonHangController())->update(),
     // 'xoa-don-hang'           => (new AdminDonHangController())->deleteDonHang(),
