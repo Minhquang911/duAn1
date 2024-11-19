@@ -9,10 +9,14 @@ require_once 'controllers/DashboardController.php';
 require_once 'controllers/bannerController.php';
 require_once 'controllers/tinTucControler.php';
 require_once 'controllers/DonHangController.php';
+require_once 'controllers/thongkeController.php';
+
 // Require toàn bộ file Models
 require_once 'models/banner.php';
 require_once 'models/DonHang.php';
 require_once 'models/tinTuc.php';
+require_once 'models/thongKe.php';
+
 // Route
 $act = $_GET['act'] ?? '/';
 
@@ -47,4 +51,8 @@ match ($act) {
     'sua-don-hang'        => (new AdminDonHangController())->update(),
     'chi-tiet-don-hang'      => (new AdminDonHangController())->detailDonHang(),
     'search-don-hang'     => (new AdminDonHangController())->search(),
+
+    // quan ly thong ke 
+
+    'thongkes'             => (new thongkeController())->home(),
 };
