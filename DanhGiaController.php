@@ -17,6 +17,16 @@ class DanhGiaController {
     
 
     // Chuyển trạng thái bình luận giữa Hiện và Ẩn
+    public function deleteDanhGia($id)
+{
+    if ($id && is_numeric($id)) {  // Kiểm tra ID hợp lệ
+        $this->modelDanhGia->delete($id);
+        header("Location: index.php?act=danh-gia");
+    } else {
+        echo "ID không hợp lệ!";
+    }
+
+}
 
 }
 ?>
