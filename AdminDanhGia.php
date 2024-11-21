@@ -94,5 +94,25 @@ return $stmt->fetchAll(PDO::FETCH_ASSOC);
             return false;
         }
     }
+
+    public function delete($id) {
+        try {
+            // Xóa đánh giá dựa trên id
+            $sql = "DELETE FROM danh_gias WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+    
+            // Kiểm tra xem xóa thành công hay không
+            if ($stmt->rowCount() > 0) {
+                return true; // Xóa thành công
+            } else {
+                return false; // Không tìm thấy đánh giá để xóa
+            }
+        } catch (PDOException $e) {
+            echo 'Lỗi: ' . $e->getMessage();
+            return false;
+        }
+    }
 }
 ?>
