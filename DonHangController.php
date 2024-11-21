@@ -33,8 +33,7 @@ class AdminDonHangController
 
         // lay sanh sach trang thai don hangs
         $listTrangThaiDonHang = $this->modelDonHang->getAllTrangThaiDonHang();
-        // var_dump($listTrangThaiDonHang);
-        // exit();
+
 
         require_once 'views/donhang/detailDonHang.php';
     }

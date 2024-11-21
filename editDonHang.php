@@ -68,7 +68,6 @@
                                     <div class="card-header align-items-center d-flex">
                                         <h4 class="card-title mb-0 flex-grow-1">Sửa thông tin đơn hàng</h4>
                                     </div><!-- end card header -->
-
                                     <div class="card-body">
                                         <div class="live-preview">
                                             <form action="?act=sua-don-hang" method="post">
@@ -132,17 +131,13 @@
                                                             ?>
                                                             <select class="form-control" name="trang_thai_id" required>
                                                                 <option value="">-- Chọn trạng thái --</option>
-                                                                <option value="1" <?= $trangThaiDonHang == 1 ? 'selected' : '' ?>>Chưa Xác Nhận</option>
+                                                                <option value="1" <?= $trangThaiDonHang == 1 ? 'selected' : '' ?>>Chờ Xác Nhận</option>
                                                                 <option value="2" <?= $trangThaiDonHang == 2 ? 'selected' : '' ?>>Đã Xác Nhận</option>
-                                                                <option value="3" <?= $trangThaiDonHang == 3 ? 'selected' : '' ?>>Chưa Thanh Toán</option>
-                                                                <option value="4" <?= $trangThaiDonHang == 4 ? 'selected' : '' ?>>Đã Thanh Toán</option>
-                                                                <option value="5" <?= $trangThaiDonHang == 5 ? 'selected' : '' ?>>Đang Chuẩn Bị Hàng</option>
-                                                                <option value="6" <?= $trangThaiDonHang == 6 ? 'selected' : '' ?>>Đang Giao</option>
-                                                                <option value="7" <?= $trangThaiDonHang == 7 ? 'selected' : '' ?>>Đã Giao</option>
-                                                                <option value="8" <?= $trangThaiDonHang == 8 ? 'selected' : '' ?>>Đã Nhận</option>
-                                                                <option value="9" <?= $trangThaiDonHang == 9 ? 'selected' : '' ?>>Thành Công</option>
-                                                                <option value="10" <?= $trangThaiDonHang == 10 ? 'selected' : '' ?>>Hoàn Hàng</option>
-                                                                <option value="11" <?= $trangThaiDonHang == 11 ? 'selected' : '' ?>>Hủy Đơn</option>
+                                                                <option value="6" <?= $trangThaiDonHang == 3 ? 'selected' : '' ?>>Đang Giao</option>
+                                                                <option value="7" <?= $trangThaiDonHang == 4 ? 'selected' : '' ?>>Đã Giao</option>
+                                                                <option value="9" <?= $trangThaiDonHang == 5 ? 'selected' : '' ?>>Thành Công</option>
+                                                                <option value="10" <?= $trangThaiDonHang == 6 ? 'selected' : '' ?>>Hoàn Hàng</option>
+                                                                <option value="11" <?= $trangThaiDonHang == 7 ? 'selected' : '' ?>>Hủy Đơn</option>
                                                             </select>
 
 
@@ -152,7 +147,6 @@
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <!--end col-->
                                                     <div class="col-lg-12">
                                                         <div class="text-center">
                                                             <button type="submit" class="btn btn-primary">Cập nhật</button>
