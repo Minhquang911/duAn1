@@ -49,3 +49,6 @@ match ($act) {
    
 
 };
+
+                                                    <a href="<?= BASE_URL . '?act=chi-tiet-san-pham&id=' . $sanPham['id'] ?> " class="btn btn-cart">Xem chi tiết</a>
+
