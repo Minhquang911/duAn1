@@ -28,9 +28,23 @@ class HomeController
         $Sanphams = $this->modelSanPham->getAll();
     }
 
+      // Lấy tất cả danh mục
+      $categories = $this->modelSanPham->getDanhMucs();
+
     // Gửi dữ liệu đến view
     require_once './views/listSanpham.php';
 }
+
+
+public function danhMucSanPham() {
+    // Lấy tất cả danh mục sản phẩm
+    $danhMucs = $this->modelSanPham->getDanhMucs();
+    $Sanphams = $this->modelSanPham->getAllSanPham(); // Hoặc getAll() tùy theo yêu cầu
+
+    // Truyền dữ liệu vào view
+    require_once './views/danhmuc_sanpham.php';
+}
+
 
 
 

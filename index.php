@@ -27,6 +27,7 @@ match ($act) {
     'chi-tiet-san-pham' => (new HomeController())->chiTietSanPham(),
     'search-san-pham'       => (new HomeController())->search(),
     'list-sanpham'       => (new HomeController())->danhSachSanPham(),
+    'danh-muc-san-pham'  => (new HomeController())->danhMucSanPham(),
     // Đăng nhập client
     'login' => (new HomeController())->formLogin(),
     'check-login' => (new HomeController())->checkLogin(),

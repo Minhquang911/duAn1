@@ -160,6 +160,8 @@ return $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Trả về mảng danh mục
     }
 
+    
+
     public function getListSanPhamDanhMuc($danh_muc_id){
         try {
             $sql = 'SELECT san_phams.*, danh_mucs.ten_danh_muc
