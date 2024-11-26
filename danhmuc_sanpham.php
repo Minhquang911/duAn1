@@ -5,8 +5,62 @@
     <div class="container">
         <div class="row">
             <div class="col-md-3">
-                <!-- Bảng danh mục sản phẩm bên trái có thể giữ nguyên hoặc không cần thiết -->
+                <div class="sidebar">
+                    <div class="sidebar-widget">
+                        <h3 class="sidebar-title">Danh mục sản phẩm</h3>
+                        <ul class="sidebar-list">
+                            <?php
+                            if (isset($categories) && is_array($categories)):
+                                foreach ($categories as $category):
+                                    // Kiểm tra xem danh mục có phải là danh mục đang được chọn không
+                                    $isActive = (isset($_GET['id']) && $_GET['id'] == $category['id']) ? 'active' : '';
+                            ?>
+                                    <li class="<?= $isActive ?>">
+                                        <a href="<?= BASE_URL . '?act=danh-muc-san-pham&id=' . $category['id'] ?>" style="color: black;">
+                                            <?= $category['ten_danh_muc'] ?> <!-- Tên danh mục -->
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <p>Không có danh mục sản phẩm.</p>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+
+
+                    <!-- Bộ lọc sản phẩm -->
+                    <div class="sidebar-widget">
+                        <h3 class="sidebar-title">Tìm theo giá</h3>
+                        <ul class="filter-options">
+                            <li>
+                                <input type="checkbox" id="filter-1" onchange="applyFilter('filter-1', 0, 1000000)">
+                                <a href="<?= BASE_URL . '?min_price=0&max_price=1000000' ?>" style="color: black;" onclick="toggleAndApplyFilter('filter-1', 0, 1000000, event);">Giá dưới 1.000.000đ</a>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="filter-2" onchange="applyFilter('filter-2', 1000000, 1500000)">
+                                <a href="<?= BASE_URL . '?min_price=1000000&max_price=1500000' ?>" style="color: black;" onclick="toggleAndApplyFilter('filter-2', 1000000, 1500000, event);">1.000.000đ - 1.500.000đ</a>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="filter-3" onchange="applyFilter('filter-3', 1500000, 2000000)">
+                                <a href="<?= BASE_URL . '?min_price=1500000&max_price=2000000' ?>" style="color: black;" onclick="toggleAndApplyFilter('filter-3', 1500000, 2000000, event);">1.500.000đ - 2.000.000đ</a>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="filter-4" onchange="applyFilter('filter-4', 2000000, 2500000)">
+                                <a href="<?= BASE_URL . '?min_price=2000000&max_price=2500000' ?>" style="color: black;" onclick="toggleAndApplyFilter('filter-4', 2000000, 2500000, event);">2.000.000đ - 2.500.000đ</a>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="filter-5" onchange="applyFilter('filter-5', 2500000, 3000000)">
+                                <a href="<?= BASE_URL . '?min_price=2500000&max_price=3000000' ?>" style="color: black;" onclick="toggleAndApplyFilter('filter-5', 2500000, 3000000, event);">2.500.000đ - 3.000.000đ</a>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="filter-6" onchange="applyFilter('filter-6', 3000000, 10000000)">
+                                <a href="<?= BASE_URL . '?min_price=3000000' ?>" style="color: black;" onclick="toggleAndApplyFilter('filter-6', 3000000, 10000000, event);">Giá trên 3.000.000đ</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
+
 
             <div class="col-md-9">
                 <section class="feature-product section-padding">

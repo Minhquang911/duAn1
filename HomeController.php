@@ -5,6 +5,8 @@ class HomeController
 
     public $modelNguoiDung;
     public $modelSanPham;
+    public $modelTaiKhoan;
+    public $modelDonHang;
     public $conn;
 
     public function __construct()
@@ -16,31 +18,50 @@ class HomeController
 
     public function home(){
         $listSanPham = $this->modelSanPham->getAllSanPham();
+        $categories = $this->modelSanPham->getDanhMucs();
         require_once './views/home.php';
     }
 
     public function danhSachSanPham()
-{
-    $searchTerm = $_GET['search'] ?? ''; 
-    if ($searchTerm) {
-        $Sanphams = $this->modelSanPham->searchByName($searchTerm);
-    } else {
-        $Sanphams = $this->modelSanPham->getAll();
+    {
+        // Lấy giá trị tìm kiếm
+        $searchTerm = $_GET['search'] ?? '';
+    
+        // Lấy giá trị phân trang
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $itemsPerPage = 16;
+        $offset = ($currentPage - 1) * $itemsPerPage;
+    
+        // Lấy giá trị lọc theo khoảng giá từ URL
+        $min_price = isset($_GET['min_price']) ? (int)$_GET['min_price'] : 0;
+        $max_price = isset($_GET['max_price']) ? (int)$_GET['max_price'] : PHP_INT_MAX;
+    
+        // Lấy sản phẩm dựa trên bộ lọc
+        if ($searchTerm) {
+            $Sanphams = $this->modelSanPham->searchByNameAndPrice($searchTerm, $min_price, $max_price);
+        } else {
+            $Sanphams = $this->modelSanPham->getPagedSanPhamByPrice($min_price, $max_price, $offset, $itemsPerPage);
+        }
+    
+        // Lấy tổng số sản phẩm theo khoảng giá để tính số trang
+        $totalItems = $this->modelSanPham->getTotalSanPhamByPrice($min_price, $max_price);
+        $totalPages = ceil($totalItems / $itemsPerPage);
+    
+        // Lấy danh mục
+        $categories = $this->modelSanPham->getDanhMucs();
+    
+        // Gửi dữ liệu đến View
+        require_once './views/listSanpham.php';
     }
-
-      // Lấy tất cả danh mục
-      $categories = $this->modelSanPham->getDanhMucs();
-
-    // Gửi dữ liệu đến view
-    require_once './views/listSanpham.php';
-}
+    
+    
 
 
 public function danhMucSanPham() {
     // Lấy tất cả danh mục sản phẩm
     $danhMucs = $this->modelSanPham->getDanhMucs();
     $Sanphams = $this->modelSanPham->getAllSanPham(); // Hoặc getAll() tùy theo yêu cầu
-
+    $categories = $this->modelSanPham->getDanhMucs();
     // Truyền dữ liệu vào view
     require_once './views/danhmuc_sanpham.php';
 }
@@ -159,4 +180,35 @@ public function danhMucSanPham() {
          }
      }
     
+
+     public function chiTietMuaHang (){
+        if(isset($_SESSION['user_client'])){
+            // Lấy ra thông tin tài khoản đăng nhập
+            $user = $this->modelTaiKhoan->getTaiKhoanFromEmail($_SESSION['user_client']);
+            $tai_khoan_id = $user['id'];
+
+            // Lấy id đơn truyền từ URL
+            $donHangId = $_GET['id'];
+
+            // Lấy ra danh sách trạng thái đơn hàng
+            $arrTrangThaiDonHang = $this->modelDonHang->getTrangThaiDonHang();
+            $trangThaiDonHang = array_column($arrTrangThaiDonHang, 'ten_trang_thai', 'id');
+
+            //Lấy ra danh sách phương thức thanh toán
+            $arrPhuongThucThanhToan = $this->modelDonHang->getPhuongThucThanhToan();
+            $phuongThucThanhToan = array_column($arrPhuongThucThanhToan, 'ten_phuong_thuc', 'id');
+
+            //Lấy ra thông tin đơn hàng theo ID
+            $donHang = $this->modelDonHang->getDonHangById($donHangId);
+
+            // Lấy thông tin sản phẩm của đơn hàng trong bảng chi tiết đơn hàng
+            $chiTietDonHang = $this->modelDonHang->getChiTietDonHangByDonHangId($donHangId);
+            // echo "<pre>";
+            // print_r($donHang);
+
+        } else {
+            var_dump('Bạn chưa đăng nhập');
+            die;
+        }
+     }
 }

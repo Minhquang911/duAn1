@@ -28,6 +28,8 @@ match ($act) {
     'search-san-pham'       => (new HomeController())->search(),
     'list-sanpham'       => (new HomeController())->danhSachSanPham(),
     'danh-muc-san-pham'  => (new HomeController())->danhMucSanPham(),
+    // 'chi-tiet-mua-hang'  => (new HomeController())->chiTietMuaHang(),
+    
     // Đăng nhập client
     'login' => (new HomeController())->formLogin(),
     'check-login' => (new HomeController())->checkLogin(),

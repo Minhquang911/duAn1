@@ -10,148 +10,141 @@
                     <div class="sidebar-widget">
                         <h3 class="sidebar-title">Danh mục sản phẩm</h3>
                         <ul class="sidebar-list">
-                            <?php
-                            if (isset($categories) && is_array($categories)):
-                                foreach ($categories as $category):
-                            ?>
+                            <?php if (!empty($categories) && is_array($categories)): ?>
+                                <?php foreach ($categories as $category): ?>
                                     <li>
-                                        <a href="<?= BASE_URL . '?act=danh-muc-san-pham&id=' . $category['id'] ?>">
-                                            <?= $category['ten_danh_muc'] ?> <!-- Tên danh mục -->
+                                        <a href="<?= BASE_URL . '?act=danh-muc-san-pham&id=' . $category['id'] ?>" style="color: black;">
+                                            <?= htmlspecialchars($category['ten_danh_muc']) ?>
                                         </a>
                                     </li>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <p>Không có danh mục sản phẩm.</p>
+                                <li>Không có danh mục sản phẩm.</li>
                             <?php endif; ?>
                         </ul>
+
                     </div>
 
-                    <!-- Bảng bộ lọc sản phẩm - tìm theo giá -->
+                    <!-- Tìm theo giá -->
                     <div class="sidebar-widget">
-                        <h3 class="sidebar-title">Bộ lọc sản phẩm</h3>
-                        <form action="<?= BASE_URL ?>" method="GET">
-                            <div class="price-filter">
-                                <label for="min_price">Giá từ:</label>
-                                <input type="number" id="min_price" name="min_price" placeholder="0" value="<?= isset($_GET['min_price']) ? $_GET['min_price'] : '' ?>">
-                            </div>
-                            <div class="price-filter">
-                                <label for="max_price">Đến:</label>
-                                <input type="number" id="max_price" name="max_price" placeholder="1000000" value="<?= isset($_GET['max_price']) ? $_GET['max_price'] : '' ?>">
-                            </div>
-                            <button type="submit" class="btn btn-filter">Lọc theo giá</button>
-                        </form>
+                        <h3 class="sidebar-title">Tìm theo giá</h3>
+                        <ul class="filter-options">
+                            <li>
+                                <input type="checkbox" id="filter-1">
+                                <a href="#" style="color: black;" onclick="toggleAndApplyFilter('filter-1', 0, 1000000, event);">
+                                    Giá dưới 1.000.000đ
+                                </a>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="filter-2">
+                                <a href="#" style="color: black;" onclick="toggleAndApplyFilter('filter-2', 1000000, 1500000, event);">
+                                    1.000.000đ - 1.500.000đ
+                                </a>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="filter-3">
+                                <a href="#" style="color: black;" onclick="toggleAndApplyFilter('filter-3', 1500000, 2000000, event);">
+                                    1.500.000đ - 2.000.000đ
+                                </a>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="filter-4">
+                                <a href="#" style="color: black;" onclick="toggleAndApplyFilter('filter-4', 2000000, 2500000, event);">
+                                    2.000.000đ - 2.500.000đ
+                                </a>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="filter-5">
+                                <a href="#" style="color: black;" onclick="toggleAndApplyFilter('filter-5', 2500000, 3000000, event);">
+                                    2.500.000đ - 3.000.000đ
+                                </a>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="filter-6">
+                                <a href="#" style="color: black;" onclick="toggleAndApplyFilter('filter-6', 3000000, 10000000, event);">
+                                    Giá trên 3.000.000đ
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
             <!-- Danh sách sản phẩm - bên phải -->
             <div class="col-md-9">
-                <!-- breadcrumb area start -->
-                <div class="breadcrumb-area">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="breadcrumb-wrap">
-                                    <nav aria-label="breadcrumb">
-                                        <ul class="breadcrumb">
-                                            <li class="breadcrumb-item"><a href="<?= BASE_URL ?>"><i class="fa fa-home"></i></a></li>
-                                            <li class="breadcrumb-item"><a href="shop.html">Sản phẩm</a></li>
-                                            <li class="breadcrumb-item active" aria-current="page">Danh sách sản phẩm</li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- breadcrumb area end -->
-
-                <!-- featured product area start -->
                 <section class="feature-product section-padding">
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                <!-- section title start -->
                                 <div class="section-title text-center">
                                     <h2 class="title">Danh sách sản phẩm</h2>
                                 </div>
-                                <!-- section title end -->
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12">
-                                <div class="product-carousel-4_2 slick-row-10 slick-arrow-style">
-                                    <?php
-                                    // Kiểm tra xem có filter theo danh mục hay không
-                                    $categoryFilter = isset($_GET['category']) ? $_GET['category'] : [];
-                                    $minPrice = isset($_GET['min_price']) ? $_GET['min_price'] : 0;
-                                    $maxPrice = isset($_GET['max_price']) ? $_GET['max_price'] : PHP_INT_MAX;
-
-                                    foreach ($Sanphams as $key => $sp):
-                                        // Kiểm tra nếu sản phẩm thuộc danh mục được chọn và giá lọc
-                                        if ((empty($categoryFilter) || in_array($sp['danh_muc_id'], $categoryFilter)) &&
-                                            $sp['gia_ban'] >= $minPrice && $sp['gia_ban'] <= $maxPrice
-                                        ):
-                                    ?>
-                                            <!-- product item start -->
-                                            <div class="product-item">
-                                                <figure class="product-thumb">
+                            <?php if (!empty($Sanphams) && is_array($Sanphams)): ?>
+                                <?php foreach ($Sanphams as $sp): ?>
+                                    <div class="col-md-4 col-sm-6 mb-4">
+                                        <div class="product-item">
+                                            <figure class="product-thumb">
+                                                <a href="<?= BASE_URL . '?act=chi-tiet-san-pham&id=' . $sp['id'] ?>">
+                                                    <img class="pri-img" src="<?= BASE_URL_IMG . $sp['hinh_anh'] ?>" alt="<?= htmlspecialchars($sp['ten_san_pham']) ?>">
+                                                </a>
+                                            </figure>
+                                            <div class="product-caption text-center">
+                                                <h6 class="product-name">
                                                     <a href="<?= BASE_URL . '?act=chi-tiet-san-pham&id=' . $sp['id'] ?>">
-                                                        <img class="pri-img" src="<?= BASE_URL_IMG . $sp['hinh_anh'] ?>" alt="product">
-                                                        <img class="sec-img" src="<?= BASE_URL_IMG . $sp['hinh_anh'] ?>" alt="product">
+                                                        <?= htmlspecialchars($sp['ten_san_pham']) ?>
                                                     </a>
-                                                    <div class="product-badge">
-                                                        <?php
-                                                        $ngayNhap = new DateTime($sp['ngay_nhap']);
-                                                        $ngayHienTai = new DateTime();
-                                                        $tinhNgay = $ngayHienTai->diff($ngayNhap);
-
-                                                        if ($tinhNgay->days <= 7) { ?>
-                                                            <div class="product-label new">
-                                                                <span>Mới</span>
-                                                            </div>
-                                                        <?php
-                                                        }
-                                                        ?>
-                                                        <?php if ($sp['gia_khuyen_mai']) { ?>
-                                                            <div class="product-label discount">
-                                                                <span>Giảm giá</span>
-                                                            </div>
-                                                        <?php } ?>
-                                                    </div>
-
-                                                    <div class="cart-hover">
-                                                        <a href="<?= BASE_URL . '?act=chi-tiet-san-pham&id=' . $sp['id'] ?>" class="btn btn-cart">Thêm vào giỏ hàng</a>
-                                                    </div>
-                                                </figure>
-
-                                                <div class="product-caption text-center">
-                                                    <h6 class="product-name">
-                                                        <a href="<?= BASE_URL . '?act=chi-tiet-san-pham&id=' . $sp['id'] ?>"><?= $sp['ten_san_pham'] ?></a>
-                                                    </h6>
-                                                    <div class="price-box">
-                                                        <?php if ($sp['gia_khuyen_mai']) { ?>
-                                                            <span class="price-regular"><?= formatPrice($sp['gia_khuyen_mai']) . 'đ'; ?></span>
-                                                            <span class="price-old"><del><?= formatPrice($sp['gia_ban']) . 'đ'; ?></del></span>
-                                                        <?php } else { ?>
-                                                            <span class="price-regular"><?= formatPrice($sp['gia_ban']) . 'đ'; ?></span>
-                                                        <?php } ?>
-                                                    </div>
+                                                </h6>
+                                                <div class="price-box">
+                                                    <span class="price-regular"><?= formatPrice($sp['gia_ban']) ?> đ</span>
                                                 </div>
                                             </div>
-                                            <!-- product item end -->
-                                    <?php endif;
-                                    endforeach; ?>
-
-                                </div>
-                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <p>Không có sản phẩm nào trong danh mục này.</p>
+                            <?php endif; ?>
                         </div>
+
+
                     </div>
-                </section>
-                <!-- featured product area end -->
             </div>
         </div>
+        </section>
     </div>
+    </div>
+    </div>
+    <?php if ($totalPages > 1): ?>
+        <nav>
+            <ul class="pagination justify-content-center">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?= $i == $currentPage ? 'active' : '' ?>">
+                        <a class="page-link" href="<?= BASE_URL . '?act=list-sanpham&page=' . $i ?>">
+                            <?= $i ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
+    <?php endif; ?>
+
+
 </main>
 
+
 <?php require_once 'layout/footer.php'; ?>
+
+<script>
+    function toggleAndApplyFilter(id, minPrice, maxPrice, event) {
+        event.preventDefault(); // Ngăn chặn reload trang
+        var checkbox = document.getElementById(id);
+        checkbox.checked = !checkbox.checked;
+        var url = new URL(window.location.href);
+        url.searchParams.set('min_price', minPrice);
+        url.searchParams.set('max_price', maxPrice);
+        window.location.href = url.href; // Cập nhật URL và reload
+    }
+</script>
