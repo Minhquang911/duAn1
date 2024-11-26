@@ -133,110 +133,26 @@
 
 </header>
 <!-- end Header Area -->
-
-<body>
-    <div class="page-content">
-        <div class="container-fluid">
-
-            <!-- start page title -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
-                        <h4 class="mb-sm-0" style="color: brown;">Trang Tin Tức</h4>
-                    </div>
+<div class="row justify-content-center">
+    <!-- News detail column -->
+    <div class="col-xxl-10 col-lg-12" style="width: 90%; margin: auto;">
+        <h2 class="text-center text-brown mb-4">Chi tiết Trang Tin Tức</h2>
+        <?php if ($tinTuc) { ?>
+            <div class="card shadow-lg" style="margin: 20px auto; padding: 20px; max-width: 100%;">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title text-center"><?= htmlspecialchars($tinTuc['tieude']) ?></h4>
+                    <p class="card-subtitle text-center">Ngày tạo: <?= htmlspecialchars($tinTuc['ngay_tao']) ?></p>
                 </div>
-
+                <div class="content-detail" style="line-height: 1.8; font-size: 16px;">
+                    <?= $tinTuc['noidung'] ?>
+                </div>
             </div>
-            <!-- end page title -->
-
-            <div class="row">
-                <div class="col-xxl-3">
-                    <div class="card">
-                        <div class="card-body p-4">
-                            <div class="search-box">
-                                <p style="color: brown;" class="py-2 d-block">Search</p>
-                                <div class="position-relative">
-                                    <input type="text" class="form-control rounded bg-light border-light" placeholder="Search...">
-                                    <i class="mdi mdi-magnify search-icon"></i>
-                                </div>
-                            </div>
-
-                            <div class="mt-4 pt-4 border-top border-dashed border-bottom-0 border-start-0 border-end-0">
-                                <p style="color: brown;" class="py-2 d-block">Thể loại </p>
-
-                                <ul class="list-unstyled fw-medium">
-                                    <li><a href="index.php?category=TinMoi" class="text-dark py-2 d-block"><i class="mdi mdi-chevron-right me-1"></i> Tin mới</a></li>
-                                    <li><a href="index.php?category=TinNoiBat" class="text-dark py-2 d-block"><i class="mdi mdi-chevron-right me-1"></i> Tin nổi bật <span class="badge badge-soft-success rounded-pill float-end ms-1 font-size-12">04</span></a></li>
-                                    <li><a href="index.php?category=SuKienGiamGia" class="text-dark py-2 d-block"><i class="mdi mdi-chevron-right me-1"></i> Sự kiện giảm giá</a></li>
-                                </ul>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xxl-9">
-                    <div class="row g-4 mb-3">
-                        <div class="col-sm-auto">
-                            <div>
-                                <h2 class="mb-sm-0" style="color: brown;">Danh Sách Tin Tức</h2>
-                            </div>
-                        </div>
-
-                        <div class="col-sm">
-                            <div class="d-flex justify-content-sm-end gap-2">
-                                <div class="search-box ms-2">
-                                    <input type="text" class="form-control" placeholder="Tim Kiếm Tin Tức">
-                                    <i class="ri-search-line search-icon"></i>
-                                </div>
-
-                                <select class="form-control w-md" data-choices data-choices-search-false>
-                                    <option value="All">All</option>
-                                    <option value="Today">Today</option>
-                                    <option value="Yesterday" selected>Yesterday</option>
-                                    <option value="Last 7 Days">Last 7 Days</option>
-                                    <option value="Last 30 Days">Last 30 Days</option>
-                                    <option value="This Month">This Month</option>
-                                    <option value="Last Year">Last Year</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div><!--end row-->
-                    <div class="col-xxl-9">
-                        <div class="row g-4">
-                            <?php if (!empty($tinTucs)): ?>
-                                <?php foreach ($tinTucs as $tinTuc): ?>
-                                    <div class="col-md-4">
-                                        <div class="card shadow-sm">
-                                            <!-- Đảm bảo đường dẫn ảnh là chính xác -->
-                                            <img src="upload_images/<?= htmlspecialchars($tinTuc['image']) ?>" class="card-img-top" alt="Ảnh bài viết" width="200" height="300">
-                                            <div class="card-body">
-                                                <h5 class="card-title"><?= htmlspecialchars($tinTuc['tieude']) ?></h5>
-                                                <p class="card-text"><?= substr(htmlspecialchars($tinTuc['noidung']), 0, 100) ?>...</p>
-                                                <a href="?act=detail-tintuc&id=<?= $tinTuc['id'] ?>" class="btn btn-primary">Xem Chi Tiết</a>
-                                            </div>
-                                            <div class="card-footer text-muted">
-                                                Ngày tạo: <?= htmlspecialchars($tinTuc['ngay_tao']) ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <div class="col-12">
-                                    <p class="text-center">Không có tin tức nào.</p>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                </div><!--end col-->
-            </div><!--end row-->
-
-
-        </div>
-        <!-- container-fluid -->
+        <?php } else { ?>
+            <p class="text-center text-danger">Bài viết không tồn tại.</p>
+        <?php } ?>
     </div>
-    <!-- End Page-content -->
-</body>
+</div>
+
 <!-- Scroll to top start -->
 <div class="scroll-top not-visible">
     <i class="fa fa-angle-up"></i>

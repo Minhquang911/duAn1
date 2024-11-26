@@ -1,6 +1,5 @@
 <?php
-
-class TinTuc
+class tintuc
 {
 
     public $db;
@@ -13,7 +12,7 @@ class TinTuc
 
 
     // danh sach tintuc
-    public function getAll()
+    public function getAlltinTuc()
     {
         try {
             $sql = 'SELECT * FROM ql_tintuc';
@@ -28,111 +27,39 @@ class TinTuc
         }
     }
 
-    // them moi du lieu vao csdl
-    public function addData_tintuc($tieude_tintucs, $noidung_tintucs, $image, $trangthai_tintucs, $ngaytao_tintucs)
+    public function getTinTucByCategory($category = null)
     {
-        try {
-            $sql = 'INSERT INTO ql_tintuc (tieude, noidung, image, Trangthai, ngay_tao) 
-                VALUES (:tieude, :noidung, :image, :Trangthai, :ngay_tao)';
+        // Xây dựng câu truy vấn SQL, nếu có thể loại thì lọc theo thể loại đó
+        $sql = "SELECT tieude, noidung, ngay_tao, Trangthai, theloai FROM  ql_tintuc";
 
-            $stmt = $this->db->prepare($sql);
-
-            // Gán giá trị vào các tham số
-            $stmt->bindParam(':tieude', $tieude_tintucs);
-            $stmt->bindParam(':noidung', $noidung_tintucs);
-            $stmt->bindParam(':image', $image);
-            $stmt->bindParam(':Trangthai', $trangthai_tintucs);
-            $stmt->bindParam(':ngay_tao', $ngaytao_tintucs);
-
-
-            $stmt->execute();
-
-            return true;
-        } catch (PDOException $e) {
-            echo 'Lỗi: ' . $e->getMessage();
+        if ($category) {
+            // Thêm điều kiện lọc theo thể loại
+            $sql .= " WHERE theloai = :category";
         }
+
+        $stmt = $this->db->prepare($sql);
+
+        // Nếu có thể loại thì gán giá trị thể loại vào câu truy vấn
+        if ($category) {
+            $stmt->bindParam(':category', 1);
+        }
+
+        $stmt->execute();
+
+        // Lấy tất cả dữ liệu và trả về dưới dạng mảng
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
-
-
-
-    // lay thong tin chi tiet tu from add
-    // lay thong tin chi tiet
-    public function createData($id)
+    // Lấy thông tin bài viết theo id
+    public function getTinTucById($id)
     {
-        try {
-            $sql = 'SELECT * FROM ql_tintuc WHERE id = :id';
+        $sql = "SELECT * FROM ql_tintuc WHERE id = :id"; // Câu truy vấn SQL lấy bài viết theo id
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
 
-            $stmt = $this->db->prepare($sql);
-
-            $stmt->bindParam(':id', $id);
-
-            $stmt->execute();
-
-            $result = $stmt->fetch();
-            // Kiểm tra kết quả
-            if ($result) {
-                return $result;
-            } else {
-                return null; // hoặc bạn có thể throw một exception tùy vào yêu cầu
-            }
-        } catch (PDOException $e) {
-            echo 'Lỗi: ' . $e->getMessage();
-        }
-    }
-
-
-    //cap nhat du lieu 
-    public function updateData($id, $tieude_tintucs, $noidung_tintucs, $image, $trangthai_tintucs, $ngaytao_tintucs)
-    {
-        try {
-            // Cập nhật dữ liệu mà không có image và theloai
-            $sql = 'UPDATE ql_tintuc SET tieude = :tieude, noidung = :noidung, image = :image,  Trangthai = :Trangthai, ngay_tao = :ngay_tao WHERE id = :id';
-
-            $stmt = $this->db->prepare($sql);
-
-            // Gán giá trị vào các tham số
-            $stmt->bindParam(':id', $id);
-            $stmt->bindParam(':tieude', $tieude_tintucs);
-            $stmt->bindParam(':noidung', $noidung_tintucs);
-            $stmt->bindParam(':Trangthai', $trangthai_tintucs);
-            $stmt->bindParam(':ngay_tao', $ngaytao_tintucs);
-            $stmt->bindParam(':image', $image);
-
-            $stmt->execute();
-
-            return true;
-        } catch (PDOException $e) {
-            echo 'Lỗi: ' . $e->getMessage();
-        }
-    }
-
-
-
-
-    // xoa du lieu tintuc trong CSDL
-    public function delete_Tintuc($id)
-    {
-        try {
-            $sql = 'DELETE FROM  ql_tintuc WHERE id = :id';
-
-            $stmt = $this->db->prepare($sql);
-
-            $stmt->bindParam(':id', $id);
-
-            $stmt->execute();
-            return true;
-        } catch (PDOException $e) {
-            echo 'loi: ' . $e->getMessage();
-        }
-    }
-
-
-
-    // huy ket noi CSDL 
-    public function __destruct()
-    {
-        $this->db = null;
+        // Lấy dữ liệu và trả về
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
