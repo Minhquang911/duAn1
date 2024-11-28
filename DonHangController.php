@@ -1,108 +1,127 @@
-<?php
-class AdminDonHangController
-{
-    //Kết nối đến file model
-    public $modelDonHang;
 
-    public function __construct()
+    <?php
+    class DonHangController
     {
-        $this->modelDonHang = new DonHang();
-    }
-    //Hàm hiển thị danh sách
-    public function index()
-    {
-        // Lấy ra dữ liệu đơn hàng
-        $donHangs = $this->modelDonHang->getAll();
+        public $model;
 
-        // Đưa dữ liệu ra view
-        require_once './views/donhang/listDonHang.php';
-    }
+        public function __construct()
+        {
+            $this->model = new DonHangModel();
+        }
+        // Hiển thị danh sách đơn hàng
+        public function LichSuMuaHang()
+        {
+            if (isset($_SESSION['nguoidungs_client'])) {
+                $tai_khoan_id = $_SESSION['nguoidungs_client']['id'];
 
-    //Hàm hiển thị form sửa
-    public function edit()
-    {
-        //Lấy id
-        $id = $_GET['don_hang_id'];
-        // Lấy thông tin chi tiết của người nhận
-        $donHang = $this->modelDonHang->getDetailData($id);
+                // Lấy lại danh sách đơn hàng từ cơ sở dữ liệu mỗi lần truy cập trang
+                $orders = $this->model->getOrdersByUser($tai_khoan_id);
 
-        //Đổ dữ liệu ra form
-        require_once './views/donhang/editDonHang.php';
-    }
+                // Cập nhật lại session với danh sách đơn hàng mới
+                $_SESSION['orders'] = $orders;
 
+                // Thêm tên trạng thái và phương thức thanh toán
+                foreach ($orders as &$order) {
+                    $order['ten_trang_thai'] = $this->model->getTrangThaiDonHang($order['trang_thai_id']);
+                    $order['ten_phuong_thuc'] = $this->model->getPhuongThucThanhToan($order['phuong_thuc_thanh_toan_id']);
+                }
 
-    //Hàm xử lý cập nhật dữ liệu vào CSDL
-    public function update()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Lấy ra dữ liệu
-            $id = $_POST['id'];
-            $ma_don_hang = $_POST['ma_don_hang'];
-            $ten_nguoi_nhan = $_POST['ten_nguoi_nhan'];
-            $email_nguoi_nhan = $_POST['email_nguoi_nhan'];
-            $sdt_nguoi_nhan = $_POST['sdt_nguoi_nhan'];
-            $dia_chi_nguoi_nhan = $_POST['dia_chi_nguoi_nhan'];
-            $ghi_chu = $_POST['ghi_chu'];
-            $trang_thai_id = $_POST['trang_thai_id'] ?? null;  
-
-            // Validate
-            $errors = [];
-           
-            if (empty($ten_nguoi_nhan)) {
-                $errors['ten_nguoi_nhan'] = 'Tên người dùng là bắt buộc';
+                
+                // Render view
+                require_once './views/donhang/danhsachdonhang.php';
+            } else {
+                header("Location: index.php?act=login");
+                exit();
             }
-            if (empty($email_nguoi_nhan)) {
-                $errors['email_nguoi_nhan'] = 'Email là bắt buộc';
+        }
+
+
+
+        // Hiển thị chi tiết đơn hàng
+        public function ChiTietMuaHang()
+        {
+            if (isset($_SESSION['nguoidungs_client'])) {
+                $tai_khoan_id = $_SESSION['nguoidungs_client']['id'];
+
+                $ma_don_hang = $_GET['ma_don_hang'];
+
+                // Kiểm tra trạng thái của đơn hàng có phải là "Chờ Xác Nhận" (id = 1) hay không
+                $order = $this->model->getDonHangByMaDonHang($ma_don_hang);
+                    
+                // Lấy lại danh sách đơn hàng từ cơ sở dữ liệu mỗi lần truy cập trang
+                $orders = $this->model->getOrdersByUser($tai_khoan_id);
+
+                // Cập nhật lại session với danh sách đơn hàng mới
+                $_SESSION['orders'] = $orders;
+
+                // Thêm tên trạng thái và phương thức thanh toán
+                foreach ($orders as &$order) {
+                    $order['ten_trang_thai'] = $this->model->getTrangThaiDonHang($order['trang_thai_id']);
+                    $order['ten_phuong_thuc'] = $this->model->getPhuongThucThanhToan($order['phuong_thuc_thanh_toan_id']);
+                }
+
+                // Lấy ra thông tin đơn hàng theo ID
+                $donHang = $this->model->getDonHangById($ma_don_hang);
+
+                // Lấy thông tin sản phẩm của đơn hàng trong bảng chi tiết đơn hàng
+                $chiTietDonHang = $this->model->getChiTietDonHangByDonHangId($ma_don_hang);
+
+                // echo "<pre>";
+                // print_r($donHang);
+                // print_r($chiTietDonHang);
+                if ($donHang['tai_khoan_id'] != $tai_khoan_id) {
+                    echo "Bạn không có quyền truy cập đơn hàng này";
+                }
+                require_once './views/donhang/chiTietMuaHang.php';
+                
+                
+                require_once './views/donhang/chiTietMuaHang.php';
+            } else {
+                // Nếu không có ma_don_hang thì trả về lỗi hoặc thông báo
+                $_SESSION['error'] = 'Mã đơn hàng không hợp lệ.';
+                header('Location: index.php?act=lich-su-mua-hang');
+                exit();
             }
-            if (empty($sdt_nguoi_nhan)) {
-                $errors['sdt_nguoi_nhan'] = 'Số điện thoại là bắt buộc';
-            }
-            if (empty($dia_chi_nguoi_nhan)) {
-                $errors['dia_chi_nguoi_nhan'] = 'Địa chỉ là bắt buộc';
-            }
-            if (empty($ghi_chu)) {
-                $errors['ghi_chu'] = 'Ghi chú là bắt buộc';
-            }
-            if (empty($trang_thai_id)) {
-                $errors['trang_thai_id'] = 'Tên trạng thái là bắt buộc';
-            }            
-            // Thêm dữ liệu
-            if (empty($errors)) {
-                // Nếu không có lỗi thì thêm dữ liệu
-                // Thêm vào CSDL
-                $this->modelDonHang->updateData($id, $ma_don_hang, $ten_nguoi_nhan, $email_nguoi_nhan, $sdt_nguoi_nhan, $dia_chi_nguoi_nhan, $ghi_chu, $trang_thai_id);
-                $_SESSION['message'] = "Cập nhật thành công!";
-                unset($_SESSION['errors']);
-                header('Location: ?act=don-hangs');
+        }
+
+        // Hủy đơn hàng
+        public function HuyDonHang()
+        {
+            if (isset($_GET['ma_don_hang'])) {
+                $ma_don_hang = $_GET['ma_don_hang'];
+
+                // Kiểm tra trạng thái của đơn hàng có phải là "Chờ Xác Nhận" (id = 1) hay không
+                $order = $this->model->getDonHangByMaDonHang($ma_don_hang);
+
+                if (empty($order)) {
+                    // Nếu không có đơn hàng với mã đó
+                    $_SESSION['error'] = 'Đơn hàng không tồn tại.';
+                    header('Location: index.php?act=lich-su-mua-hang');
+                    exit();
+                }
+
+                // Kiểm tra trạng thái đơn hàng có phải là "Chờ Xác Nhận" (id = 1)
+                if ($order[0]['trang_thai_id'] != 1) {
+                    // Nếu không phải trạng thái "Chờ Xác Nhận", không thể hủy đơn
+                    $_SESSION['error'] = 'Không thể hủy đơn hàng này, chỉ đơn hàng có trạng thái "Chờ Xác Nhận" mới có thể hủy.';
+                    header('Location: index.php?act=lich-su-mua-hang');
+                    exit();
+                }
+
+                // Tiến hành hủy đơn hàng
+                $this->model->huyDonHang($ma_don_hang);
+
+                // Lưu thông báo thành công
+                $_SESSION['success'] = 'Đơn hàng đã được hủy thành công.';
+
+                // Chuyển hướng về trang lịch sử đơn hàng
+                header('Location: index.php?act=lich-su-mua-hang');
                 exit();
             } else {
-                $_SESSION['errors'] = $errors;
-                header('Location: ?act=form-sua-don-hang');
+                // Nếu không có ma_don_hang thì trả về lỗi hoặc thông báo
+                $_SESSION['error'] = 'Mã đơn hàng không hợp lệ.';
+                header('Location: index.php?act=lich-su-mua-hang');
                 exit();
             }
         }
     }
-    // Form tim kiem
-    public function search()
-    {
-        if (isset($_POST['timkiem'])) {
-            $search = $_POST['search'];
-            $donHangs = $this->modelDonHang->searchData($search);
-
-            require_once './views/donhang/listDonHang.php';
-        }
-    }
-    // //Hàm xóa dữ liệu trong CSDL
-    // public function destroy()
-    // {
-    //     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //         $id = $_POST['don_hang_id'];
-
-    //         // Xóa đơn hàng 
-    //         $this->modelDonHang->deleteData($id);
-
-    //         header('Location: ?act=don-hangs');
-    //         exit();
-    //     }
-    // }
-}
